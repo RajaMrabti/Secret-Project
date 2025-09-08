@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;/* Prevent scrollbars from ever appearing */
+}
+
+/* Full-screen container for the start screen */
+#start-screen {
+    width: 100vw;   /* 100% of viewport width */
+    height: 100vh;  /* 100% of viewport height */
+    /* Hide anything that might spill out (a safety net) */
+    overflow: hidden;
+    /* Center its children (like your GIF) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Background color if the GIF doesn't load or has transparency */
+    background-color: #000; /* Pure black */
+}
+
+/* Styles for the clickable GIF itself */
+.clickable-gif {
+    /* Force the image to be the exact size of the screen */
+    width: 100vw;
+    height: 100vh;
+    /* Scale the image to cover the entire area without distortion.
+       Since your GIF is now 16:9, this will work perfectly. */
+    object-fit: cover;
+    /* Ensure the image is displayed as a block element (removes bottom space) */
+    display: block;
+    /* Change the cursor to a pointer to hint it's clickable */
+    cursor: pointer;
+}
