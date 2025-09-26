@@ -37,34 +37,3 @@ html, body {
     /* Change the cursor to a pointer to hint it's clickable */
     cursor: pointer;
 }
-
-:root{
-    --primary: #fff;
-    --bg-colour: rgb(5,53,61);
-    --bg-envelope-colour: #f5edd1;
-    --envelope-tab: #ecdeb8;
-    --shadow-colour: rgba(0,0,0,0.2);
-    --text-colour: #444;
-    --heart-colour: rgb(252,8,231);
-}
-
-body.letter-main{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: var(--bg-colour);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-body.letter-main .container{
-    height: 100vh;
-    display: grid;
-    place-items: center;
-}
-
-body.letter-main .envelop-wrapper{
-    background: var(--bg-envelope-colour);
-    box-shadow: 0 0 40px var(--shadow-colour);
-}

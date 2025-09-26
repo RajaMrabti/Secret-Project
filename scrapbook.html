@@ -2,23 +2,286 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Scrapbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: powderblue;
+        }
+
+        /* Book */
+        .book {
+            position: relative;
+            width: 350px;
+            height: 500px;
+            transition: transform 0.5s;
+        }
+
+        .paper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            perspective: 1500px;
+        }
+
+        .front,
+        .back {
+            background-color: white;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left;
+            transition: transform 0.5s;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .front {
+            z-index: 1;
+            backface-visibility: hidden;
+            border-left: 3px solid #5cb8d4;
+        }
+
+        .back {
+            z-index: 0;
+        }
+
+        .front-content,
+        .back-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .back-content {
+            transform: rotateY(180deg)
+        }
+
+        /* Paper flip effect */
+        .flipped .front,
+        .flipped .back {
+            transform: rotateY(-180deg);
+        }
+
+        /* Controller Buttons */
+        button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            margin: 20px;
+            transition: transform 0.3s;
+            padding: 10px;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            fill: #636363;
+            transition: fill 0.3s;
+        }
+
+        button:hover .icon {
+            fill: #333;
+        }
+
+        /* Paper stack order */
+        #p1 {
+            z-index: 3;
+        }
+
+        #p2 {
+            z-index: 2;
+        }
+
+        #p3 {
+            z-index: 1;
+        }
+
+        /* Content styling */
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
-    <nav id="main-nav" class="hidden">
-        <button onclick="showLetter()">Pick me! 💌</button>
-        <button onclick="showScrapbook()">Scrapbook!</button>
-    </nav>
+    <!-- Previous Button -->
+    <button id="prev-btn">
+        <svg class="icon" viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+    </button>
 
-    <section id="scrapbook-page" class="hidden">
-        <h1> Our Scrapbook!</h1>
-        <div class="scrapbook-container">
+    <!-- Book -->
+    <div id="book" class="book">
+        <!-- Paper 1 -->
+        <div id="p1" class="paper">
+            <div class="front">
+                <div id="f1" class="front-content">
+                    <h1>Welcome to My Scrapbook</h1>
+                    <p>Click the right arrow to begin!</p>
+                </div>
+            </div>
+            <div class="back">
+                <div id="b1" class="back-content">
+                    <h1>Memories</h1>
+                    <p>This is where your memories begin...</p>
+                </div>
+            </div>
         </div>
-    </section>
+        <!-- Paper 2 -->
+        <div id="p2" class="paper">
+            <div class="front">
+                <div id="f2" class="front-content">
+                    <h1>Page 2</h1>
+                    <p>Add your photos and stories here!</p>
+                </div>
+            </div>
+            <div class="back">
+                <div id="b2" class="back-content">
+                    <h1>Page 3</h1>
+                    <p>More memories to cherish...</p>
+                </div>
+            </div>
+        </div>
+        <!-- Paper 3 -->
+        <div id="p3" class="paper">
+            <div class="front">
+                <div id="f3" class="front-content">
+                    <h1>Page 4</h1>
+                    <p>Your journey continues...</p>
+                </div>
+            </div>
+            <div class="back">
+                <div id="b3" class="back-content">
+                    <h1>The End</h1>
+                    <p>Thanks for visiting my scrapbook!</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-     <script src="script.js"></script>
+    <!-- Next Button -->
+    <button id="next-btn">
+        <svg class="icon" viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+            const book = document.getElementById("book");
+            const paper1 = document.getElementById("p1");
+            const paper2 = document.getElementById("p2");
+            const paper3 = document.getElementById("p3");
+
+            // State variables
+            let currentLocation = 1;
+            const numOfPapers = 3;
+            const maxLocation = numOfPapers + 1;
+
+            // Event listeners
+            prevBtn.addEventListener("click", goPrevPage);
+            nextBtn.addEventListener("click", goNextPage);
+
+            // Functions
+            function openBook() {
+                book.style.transform = "translateX(50%)";
+                prevBtn.style.transform = "translateX(-180px)";
+                nextBtn.style.transform = "translateX(180px)";
+            }
+
+            function closeBook(isAtBeginning) {
+                if(isAtBeginning) {
+                    book.style.transform = "translateX(0%)";
+                } else {
+                    book.style.transform = "translateX(100%)";
+                }
+                prevBtn.style.transform = "translateX(0px)";
+                nextBtn.style.transform = "translateX(0px)";
+            }
+
+            function goNextPage() {
+                if(currentLocation < maxLocation) {
+                    switch(currentLocation) {
+                        case 1:
+                            openBook();
+                            paper1.classList.add("flipped");
+                            paper1.style.zIndex = 1;
+                            break;
+                        case 2:
+                            paper2.classList.add("flipped");
+                            paper2.style.zIndex = 2;
+                            break;
+                        case 3:
+                            paper3.classList.add("flipped");
+                            paper3.style.zIndex = 3;
+                            closeBook(false);
+                            break;
+                    }
+                    currentLocation++;
+                }
+            }
+
+            function goPrevPage() {
+                if(currentLocation > 1) {
+                    switch(currentLocation) {
+                        case 2:
+                            closeBook(true);
+                            paper1.classList.remove("flipped");
+                            paper1.style.zIndex = 3;
+                            break;
+                        case 3:
+                            paper2.classList.remove("flipped");
+                            paper2.style.zIndex = 2;
+                            break;
+                        case 4:
+                            openBook();
+                            paper3.classList.remove("flipped");
+                            paper3.style.zIndex = 1;
+                            break;
+                    }
+                    currentLocation--;
+                }
+            }
+        });
+    </script>
 </body>
-
 </html>
